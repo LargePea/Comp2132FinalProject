@@ -39,16 +39,18 @@ $barbPosition: 50%;
     font-size: 25px;
     background-color: $backgroundColor;
     color: $fontColor;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     @include custom-font();
     text-align: center;
-    overflow: hidden;
+    overflow-x: hidden;
     position: absolute;
     margin: 0;
-    height: 100vh;
-    max-height: 100vh;
+    padding: 0;
+    min-height: 100vh;
     background-color: rgb(249, 235, 223)
 }
 
@@ -102,7 +104,7 @@ h3{
 
 #game{
     height: 95%;
-    width: 95%;
+    width: 95vw;
     margin: auto;
     margin-top: 1.25%;
     margin-bottom: 1.25%;
@@ -124,7 +126,8 @@ h3{
     position: relative;
     @include rounded-square(0, solid, black, 3px);
     padding: 10px;
-    height: 100%;
+    max-width: 37vw;
+    aspect-ratio: 1;
     #wrong-letters{
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -134,6 +137,21 @@ h3{
     }
     h3{
         font-size: 1.25rem;
+    }
+}
+
+#hangman-container{
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 45vw;
+    img{
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
     }
 }
 
@@ -215,6 +233,16 @@ h3{
     }
 }
 
+#error{
+    @include overlay();
+    display: none;
+
+    h3{
+        font-size: 4rem;
+        color: rgb(214, 34, 21);
+    }
+}
+
 #main-background{
     *{
         scale: 75%;
@@ -291,5 +319,50 @@ h3{
 
     p{
         margin: 0;
+    }
+}
+
+@media (width <= 1024px){
+    #game-display{
+        gap: 10px;
+    }
+}
+
+@media (width <= 768px) {
+    :root{
+        font-size: 10px;
+    }
+}
+
+@media (width <= 480px){
+
+    :root{
+        font-size: 8px;
+    }
+
+    #input{
+        gap: 5px;
+        >div{
+            gap: 0px;
+        }
+        button{
+            padding: 2px 0px;
+            max-width: 10px;
+            width: 10px;
+        }
+    }
+
+    #main-background{
+        .barb{
+            scale: 65%;
+        }
+
+        .barb-1, .barb-2{
+            transform: translate(-65%, -65%);
+        }
+
+        .barb-3, .barb-4{
+            transform: translate(65%, 65%);
+        }
     }
 }

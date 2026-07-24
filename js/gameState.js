@@ -17,6 +17,7 @@ export class GameState{
     }
 
     get wrongCounter() { return this.#wrongCounter; }
+    get word() {return this.#word; }
 
     //return: empty array if there is an error, array(1) with -1 if it is wrong, array(n) where elements are index position of correct letters
     guessCharacter(character){

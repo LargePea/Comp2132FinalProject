@@ -50,8 +50,9 @@ $(document).ready(function() {
     
     $loadingBar = $('#loading-bar')
     $wrongDisplay = $('#wrong-letters');
-    $hangman = $('#hangman');
+    $hangman = $('.hangman');
 
+    changeHangman(0, true);
     loadGame();
 });
 
@@ -75,25 +76,41 @@ async function loadGame(){
 async function getWord(wordLength){
     try{
         //generate word
-        const wordResp = await fetch(`https://random-word-api.herokuapp.com/word?length=${wordLength}`);
+        const wordResp = await fetch(`https://random-words-api.kushcreates.com/api?language=en&length=${wordLength}&type=lowercase&words=1`);
         if(!wordResp.ok)
             throw new Error("Could not connect to word generator.\nPlease try again later...");
-        const possibleWord = (await wordResp.json())[0];
+        const possibleWord = (await wordResp.json())[0]['word'];
 
         //get hint
         //THIS API DOES NOT HAVE DEFINITIONS FOR EVERY WORD THAT THE PREVIOUS API CAN GENERATE THIS IS NOT MY PROBLEM!!!!
-        const hintResp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${possibleWord}`);
+        const hintResp = await fetch(`https://freedictionaryapi.com/api/v1/entries/en/${possibleWord}`);
         if(!hintResp.ok){
             //keep looking for words until definition can be found
             console.warn("Could not find definition. Looking for new word")
             return getWord(wordLength);
         }
-        const hint = (await hintResp.json())[0]['meanings'][0]['definitions'][0]['definition'];
+
+        let definitionEntries = (await hintResp.json())['entries'];
+        if(definitionEntries.length == 0){
+            //keep looking for words until definition can be found
+            console.warn("Could not find definition. Looking for new word")
+            return getWord(wordLength);
+        }
+
+        const hint = definitionEntries[0]['senses'][0]['definition'];
         $('#hint h3').text(hint);
+
         return possibleWord;
+
     } catch(error){
-        //TO:DO ERROR MESSAGE TO USER
+        setError(error.message);
+        console.error(error);
     }
+}
+
+function setError(message){
+    $('#error-message').text(message);
+    $('#error').fadeIn(150);
 }
 
 function startAnimation(){
@@ -126,7 +143,7 @@ function handleInput(input){
 
     for(let i = 0; i < result.length; i++){
         if(result[i] === -1){
-            updateHangman(input);
+            wrongAnswer(input);
             break;
         }
 
@@ -137,10 +154,9 @@ function handleInput(input){
     $button.attr('disabled', true);
 }
 
-function updateHangman(character){
+function wrongAnswer(character){
     let wrongCounter = gameState.wrongCounter;
-    $hangman.attr('src', `${imagePath}${wrongCounter}`);
-
+    changeHangman(wrongCounter);
     let wrongHtml = $wrongDisplay.html();
     wrongHtml += `<h3>${character.toUpperCase()}</h3>`
     $wrongDisplay.html(wrongHtml);
@@ -156,15 +172,33 @@ function loseGame(){
     $('#lose-text').css('display', 'block');
     $('#win-text').css('display', 'none');
     $('#gameover').fadeIn(500);
+
+    let word = gameState.word;
+    $displayChars.each(function(index){
+        $(this).text(word[index].toUpperCase());
+    })
 }
 
 function restartGame(){
     $('#gameover').fadeOut(150);
     $('#input button:disabled').attr('disabled', false);
     $('#word-container').html('<h3></h3>');
+
     $wrongDisplay.html('');
-    $hangman.attr('src', `${imagePath}0`);
+    $hangman.css('display', 'none');
+    changeHangman(0, true);
+
     $('#hint button').fadeIn(150);
     $('#hint h3').fadeOut(150);
+
     loadGame();
+}
+
+function changeHangman(imageNumber, nofade = false){
+    if(nofade){
+       $($hangman[imageNumber]).fadeIn(0);
+    }
+    else{
+        $($hangman[imageNumber]).fadeIn(150);
+    }
 }
