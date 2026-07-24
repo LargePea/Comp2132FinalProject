@@ -1,0 +1,295 @@
+$backgroundColor: whitesmoke;
+$fontColor: black;
+$barbPosition: 50%;
+
+@mixin custom-font{
+  font-family: "New Rocker", system-ui;
+  font-style: normal;
+}
+
+@mixin invert-colour{
+    background-color: $fontColor;
+    color: $backgroundColor;
+}
+
+@mixin rounded-square($radius, $border-style, $border-colour, $border-thickness){
+    border-radius: $radius;
+    border: $border-style $border-colour $border-thickness;
+}
+
+@mixin overlay{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.53);
+    color: whitesmoke;
+
+    >div{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+}
+
+:root{
+    font-size: 25px;
+    background-color: $backgroundColor;
+    color: $fontColor;
+}
+
+body {
+    @include custom-font();
+    text-align: center;
+    overflow: hidden;
+    position: absolute;
+    margin: 0;
+    height: 100vh;
+    max-height: 100vh;
+    background-color: rgb(249, 235, 223)
+}
+
+button{
+    @include custom-font();
+    @include invert-colour;
+    @include rounded-square(10px, solid, black, 0px);
+    transition: background-color .25s, color .25s;
+}
+
+button:disabled{
+    background-color: rgb(83, 83, 83) !important;
+    color: whitesmoke !important;
+}
+
+button:hover{
+    background-color: rgb(40, 40, 40);
+    color: rgb(200, 200, 200);
+}
+
+h3{
+    margin: 0;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+#header{
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    margin-top: 20px;
+    padding: 10px 15px;
+    @include invert-colour();
+    @include rounded-square(10px, -style, -colour, -thickness);
+
+    h2{
+        @include invert-colour();
+        margin: 0;
+    }
+}
+
+#content{
+    flex: 1 0 0;
+    max-width: 100vw;
+    width: 100vw;
+    position: relative;
+}
+
+#game{
+    height: 95%;
+    width: 95%;
+    margin: auto;
+    margin-top: 1.25%;
+    margin-bottom: 1.25%;
+    position: relative;
+    box-sizing: border-box;
+    padding: 10px;
+    @include rounded-square(0, solid, black, 3px);
+    gap: 25px;
+}
+
+#game-display{
+    flex: 1 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+#wrong-display{
+    position: relative;
+    @include rounded-square(0, solid, black, 3px);
+    padding: 10px;
+    height: 100%;
+    #wrong-letters{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 10px;
+        color: rgb(134, 134, 134);
+        text-decoration: line-through wavy rgb(170, 28, 18);
+    }
+    h3{
+        font-size: 1.25rem;
+    }
+}
+
+#word-container{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+    *{
+        padding-bottom: 5px;
+        border-bottom: solid black 5px;
+        width: 2.75rem;
+        height: 2.75rem;
+        font-size: 2.5rem;
+        margin: 0;
+    }
+}
+
+#hint{
+    position: relative;
+    width: 100%;
+    min-height: calc(1.8rem + 14px);
+
+    button{
+        position: absolute; 
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 7px 15px;
+        font-size: 1.5rem;
+    }
+
+    h3{
+        font-size: 1rem;
+        width: 100%;
+        margin: auto;
+    }
+}
+
+#input{
+    gap: 15px;
+
+    div{
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    button{
+        font-size: 2rem;
+        padding: 10px 20px;
+        min-width: calc(2rem + 20px);
+    }
+}
+
+#loading-screen{
+    @include overlay();
+
+    h3{
+        font-size: 5rem
+    }
+}
+
+#gameover{
+    @include overlay();
+    display: none;
+
+
+
+    h3{
+        font-size: 4rem;
+    }
+
+    button{
+        font-size: 3rem;
+        background-color: whitesmoke;
+        color: black;
+        padding: 15px 25px;
+    }
+}
+
+#main-background{
+    *{
+        scale: 75%;
+        z-index: 10;
+    }
+    
+    .barb-1{
+        transform: translate(-55%, -55%);
+    }
+
+    .barb-2{
+        transform: translate(-55%, -55%);
+    }
+
+    .barb-3{
+        transform: translate(55%, 55%)
+    }
+
+    .barb-4{
+        transform: translate(55%, 55%);
+    }
+}
+
+#wrong-background{
+    *{
+        scale: 60%;
+    }
+    
+    .barb-1, .barb-2{
+        transform: translate(-75%, -75%);
+    }
+
+    .barb-3, .barb-4{
+        transform: translate(75%, 75%)
+    }
+}
+
+.background{
+
+    .barb{
+        position: absolute;
+    }
+
+    .barb-1{
+        left: 0;
+        top: 0;
+    }
+
+    .barb-2{
+        right: 0;
+        top: 0;
+        rotate: 90deg;
+    }
+
+    .barb-3{
+        left: 0;
+        bottom: 0;
+        rotate: 90deg;
+    }
+
+    .barb-4{
+        right: 0;
+        bottom: 0;
+    }
+}
+
+#footer{
+    @include invert-colour();
+    width: 100vw;
+    display: flex;
+    justify-content: space-evenly;
+    font-size: .5rem;
+    padding: 5px;
+
+    p{
+        margin: 0;
+    }
+}
