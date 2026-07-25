@@ -119,7 +119,7 @@ h3 {
   aspect-ratio: 1;
   max-width: 45vw;
 }
-#hangman-container img {
+#hangman-container .hangman {
   display: none;
   position: absolute;
   top: 0;
